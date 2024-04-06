@@ -1,11 +1,22 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { onMounted, ref } from 'vue';
+import Environment from './game/Environment';
+import type { EnvironmentCell } from './game/Environment';
+
+const backgroundMap = ref<EnvironmentCell[]>([]);
+
+onMounted(() => {
+  const env = new Environment();
+  backgroundMap.value = env.getMap1D();
+});
+
+
+</script>
 
 <template>
   <div class="grid-container">
-    <div v-for="i in 50" class="grid-item">
-      <div class="grid-item-content">
-        {{ i }}
-      </div>
+    <div v-for="i in backgroundMap" class="grid-item">
+      <div class="grid-item-content" :class="i"></div>
     </div>
   </div>
 </template>
@@ -17,7 +28,7 @@
 }
 
 .grid-item {
-  border: 1px solid #ccc;
+  border: 1px solid red;
   padding-top: 100%; /* Aspect ratio hack for squares */
   position: relative;
 }
@@ -32,4 +43,9 @@
   justify-content: center;
   align-items: center;
 }
+
+.grid-item-content.solid {  
+  background-color: #333;
+}
+
 </style>
