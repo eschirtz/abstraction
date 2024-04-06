@@ -1,12 +1,11 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
-<template>  
+<template>
   <div class="grid-container">
-    <div v-for="i in 60" class="grid-item">
+    <div v-for="i in 50" class="grid-item">
       <div class="grid-item-content">
         {{ i }}
-      </div>      
+      </div>
     </div>
   </div>
 </template>
@@ -29,5 +28,8 @@
   left: 0;
   right: 0;
   bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
