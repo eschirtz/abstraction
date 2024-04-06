@@ -14,14 +14,32 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="grid-container">
-    <div v-for="i in backgroundMap" class="grid-item">
-      <div class="grid-item-content" :class="i"></div>
+  <div class="main">
+    <!-- Environment background -->
+    <div class="grid-container">
+      <div v-for="i in backgroundMap" class="grid-item">
+        <div class="grid-item-content" :class="i"></div>
+      </div>
     </div>
+    <!-- Character -->
+    <div class="character"></div>
   </div>
 </template>
 
 <style scoped>
+.main {
+  position: relative;
+}
+
+.character {
+  width: v-bind("(1 / 10) * 100 + `%`");
+  height: v-bind("(1 / 6) * 100 + `%`");
+  background: black;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .grid-container {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
