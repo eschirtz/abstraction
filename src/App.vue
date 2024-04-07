@@ -1,15 +1,28 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import Environment from './game/Environment';
-import type { EnvironmentCell } from './game/Environment';
+import type { EnvironmentCell } from './game/Environment'; 
 
 const backgroundMap = ref<EnvironmentCell[]>([]);
+const backgroundDimensions = ref<{width: number; height: number}>({width: 10, height: 6});
+const character = ref<{x: number; y: number; width: number; height: number; }>({
+  x: 1,
+  y: 3,
+  width: 1,
+  height: 1,
+});
+
+const characterStyle = computed(() => ({
+  width: `${(character.value.width / backgroundDimensions.value.width) * 100}%`,
+  height: `${(character.value.height / backgroundDimensions.value.height) * 100}%`,
+  top: `${(character.value.y / backgroundDimensions.value.height) * 100}%`,
+  left: `${(character.value.x / backgroundDimensions.value.width) * 100}%`,
+}));
 
 onMounted(() => {
   const env = new Environment();
   backgroundMap.value = env.getMap1D();
 });
-
 
 </script>
 
@@ -22,7 +35,7 @@ onMounted(() => {
       </div>
     </div>
     <!-- Character -->
-    <div class="character"></div>
+    <div class="character" :style="characterStyle"></div>
   </div>
 </template>
 
@@ -32,12 +45,9 @@ onMounted(() => {
 }
 
 .character {
-  width: v-bind("(1 / 10) * 100 + `%`");
-  height: v-bind("(1 / 6) * 100 + `%`");
   background: black;
   position: absolute;
-  top: 0;
-  left: 0;
+  border-radius: 100%;
 }
 
 .grid-container {
