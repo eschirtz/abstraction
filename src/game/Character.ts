@@ -14,8 +14,11 @@ export default class Character {
     this.y = y;
   }
 
+  onGround() {
+    return this.y >= 3;
+  }
+
   update(force: { x: number; y: number }, env: Environment) {
-    console.log(force.x, force.y);
     this.velocityX += force.x / this.mass;
     this.velocityY += force.y / this.mass;
 

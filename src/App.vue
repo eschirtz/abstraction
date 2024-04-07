@@ -32,7 +32,7 @@ function animationFrame() {
 
 
   characterForceVector.x = pushForce.x;
-  characterForceVector.y = pushForce.y;
+  characterForceVector.y = 0;
 
 
   // Friction
@@ -41,10 +41,14 @@ function animationFrame() {
   }
 
   // Jumping
-  if (jumpPressed.value) [
-    characterForceVector.y = -10,
-    jumpPressed.value = false
-  ]
+  if (jumpPressed.value && character.onGround()) {
+    console.log('jumping');
+    characterForceVector.y += -30;
+    jumpPressed.value = false;
+  }
+
+  // Gravity
+  characterForceVector.y += 0.5;
 
 
   // Update game objects  
