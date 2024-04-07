@@ -1,11 +1,13 @@
 export default class Character {
-    position: { x: number, y: number };
+  x: number;
+  y: number;
+  width: number = 1;
+  height: number = 1;
 
-    constructor(x: number, y: number) {
-        this.position = { x, y };
-    }
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
 
-    update() {
-        
-    }
+  update() {}
 }

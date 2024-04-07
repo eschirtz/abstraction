@@ -1,27 +1,37 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref } from 'vue';
 import Environment from './game/Environment';
 import type { EnvironmentCell } from './game/Environment'; 
+import Character from './game/Character';
 
 const backgroundMap = ref<EnvironmentCell[]>([]);
 const backgroundDimensions = ref<{width: number; height: number}>({width: 10, height: 6});
-const character = ref<{x: number; y: number; width: number; height: number; }>({
-  x: 1,
-  y: 3,
-  width: 1,
-  height: 1,
-});
 
-const characterStyle = computed(() => ({
-  width: `${(character.value.width / backgroundDimensions.value.width) * 100}%`,
-  height: `${(character.value.height / backgroundDimensions.value.height) * 100}%`,
-  top: `${(character.value.y / backgroundDimensions.value.height) * 100}%`,
-  left: `${(character.value.x / backgroundDimensions.value.width) * 100}%`,
-}));
+const characterStyle = ref<{width: string; height: string; top: string; left: string}>();
 
-onMounted(() => {
-  const env = new Environment();
+function setCharacterStyle(c: Character) {
+  characterStyle.value = {
+    width: `${(c.width / backgroundDimensions.value.width) * 100}%`,
+    height: `${(c.height / backgroundDimensions.value.height) * 100}%`,
+    top: `${(c.y / backgroundDimensions.value.height) * 100}%`,
+    left: `${(c.x / backgroundDimensions.value.width) * 100}%`,
+  };
+}
+
+const env = new Environment();
+const character = new Character(1, 3);
+
+function animationFrame() {
+  // Update game objects
+
+  // Render game objects
+  setCharacterStyle(character);  
+  requestAnimationFrame(animationFrame);
+}
+
+onMounted(() => {  
   backgroundMap.value = env.getMap1D();
+  animationFrame();
 });
 
 </script>
