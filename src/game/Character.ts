@@ -1,3 +1,5 @@
+import type Environment from "./Environment";
+
 export default class Character {
   x: number;
   y: number;
@@ -12,18 +14,15 @@ export default class Character {
     this.y = y;
   }
 
-  isOnGround() {
-    return this.y >= 3;
-  }
+  update(force: { x: number; y: number }, env: Environment) {
+    console.log(force.x, force.y);
+    this.velocityX += force.x / this.mass;
+    this.velocityY += force.y / this.mass;
 
-  applyForce(vector: { x: number; y: number }) {    
-    this.velocityX += vector.x / this.mass;
-    this.velocityY += vector.y / this.mass;
-    console.log(this.velocityX, this.velocityY)
-  }
-
-  update() {
-    this.x += this.velocityX;
-    this.y += this.velocityY;
+    const candidateX = this.x + this.velocityX;
+    const candidateY = this.y + this.velocityY;
+    // Check for collisions in the x direction
+    this.x = candidateX;
+    this.y = candidateY > 3 ? 3 : candidateY;
   }
 }

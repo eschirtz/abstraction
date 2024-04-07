@@ -26,34 +26,29 @@ const rightPressed = ref(false);
 const jumpPressed = ref(false);
 
 function animationFrame() {
-  const forceVector = { x: 0, y: 0 };
+  const characterForceVector = { x: 0, y: 0 };
 
-  const gravity = 0.05; // acceleration
+  const pushForce = { x: leftPressed.value ? -1 : rightPressed.value ? 1 : 0, y: 0 };
 
-  if (leftPressed.value) {
-    forceVector.x = -1;
-  }
-  if (rightPressed.value) {
-    forceVector.x = 1;
-  }
-  if (character.isOnGround() && jumpPressed.value) {
-    forceVector.y = -50;
-    jumpPressed.value = false;
-  } else if (!character.isOnGround()) {
-    forceVector.y = character.mass * gravity;
+
+  characterForceVector.x = pushForce.x;
+  characterForceVector.y = pushForce.y;
+
+
+  // Friction
+  if (character.velocityX) {
+    characterForceVector.x += character.velocityX > 0 ? -0.25 : 0.25;
   }
 
-  // Ground plane
-  if (character.y <= 3) {
-    forceVector.y
-  } else {
-    forceVector.y = 0;
-    character.velocityY = 0;
-  }
+  // Jumping
+  if (jumpPressed.value) [
+    characterForceVector.y = -10,
+    jumpPressed.value = false
+  ]
 
-  // Update game objects
-  character.applyForce(forceVector);
-  character.update();
+
+  // Update game objects  
+  character.update(characterForceVector, env);
   // Render game objects
   setCharacterStyle(character);
   requestAnimationFrame(animationFrame);
