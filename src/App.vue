@@ -21,9 +21,22 @@ function setCharacterStyle(c: Character) {
 const env = new Environment();
 const character = new Character(1, 3);
 
+const leftPressed = ref(false);
+const rightPressed = ref(false);
+const upPressed = ref(false);
+const downPressed = ref(false);
+
 function animationFrame() {
   // Update game objects
-
+  const forceVector = {x: 0, y: 0};
+  if (leftPressed.value) {
+    forceVector.x = -1;
+  } 
+  if (rightPressed.value) {
+    forceVector.x = 1;
+  }
+  
+  character.x += forceVector.x;
   // Render game objects
   setCharacterStyle(character);  
   requestAnimationFrame(animationFrame);
@@ -32,6 +45,38 @@ function animationFrame() {
 onMounted(() => {  
   backgroundMap.value = env.getMap1D();
   animationFrame();
+  
+  // Add event listener for keyboard input
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') {
+      rightPressed.value = true;
+    }
+    if (e.key === 'ArrowLeft') {
+      leftPressed.value = true;
+    }
+    if (e.key === 'ArrowUp') {
+      upPressed.value = true;
+    }
+    if (e.key === 'ArrowDown') {
+      downPressed.value = true;
+    }
+  });
+
+  window.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowRight') {
+      rightPressed.value = false;
+    }
+    if (e.key === 'ArrowLeft') {
+      leftPressed.value = false;
+    }
+    if (e.key === 'ArrowUp') {
+      upPressed.value = false;
+    }
+    if (e.key === 'ArrowDown') {
+      downPressed.value = false;
+    }
+  });
+
 });
 
 </script>
