@@ -19,42 +19,28 @@ function setCharacterStyle(c: Character) {
 }
 
 const env = new Environment();
-const character = new Character(1, 3);
+const character = new Character(0, 0);
 
 const leftPressed = ref(false);
 const rightPressed = ref(false);
+const upPressed = ref(false);
+const downPressed = ref(false);
 const jumpPressed = ref(false);
 
 function animationFrame() {
   const characterForceVector = { x: 0, y: 0 };
 
-  const pushForce = { x: leftPressed.value ? -1 : rightPressed.value ? 1 : 0, y: 0 };
-
+  const pushForce = { x: leftPressed.value ? -1 : rightPressed.value ? 1 : 0, y: upPressed.value ? -1 : downPressed.value ? 1 : 0 };
 
   characterForceVector.x = pushForce.x;
-  characterForceVector.y = 0;
-
-
-  // Friction
-  if (character.velocityX) {
-    characterForceVector.x += character.velocityX > 0 ? -0.25 : 0.25;
-  }
-
-  // Jumping
-  if (jumpPressed.value && character.onGround()) {
-    console.log('jumping');
-    characterForceVector.y += -30;
-    jumpPressed.value = false;
-  }
-
-  // Gravity
-  characterForceVector.y += 0.5;
-
+  characterForceVector.y = pushForce.y;
 
   // Update game objects  
   character.update(characterForceVector, env);
+
   // Render game objects
   setCharacterStyle(character);
+
   requestAnimationFrame(animationFrame);
 }
 
@@ -70,6 +56,12 @@ onMounted(() => {
     if (e.key === 'ArrowLeft') {
       leftPressed.value = true;
     }
+    if (e.key === 'ArrowUp') {
+      upPressed.value = true;
+    }
+    if (e.key === 'ArrowDown') {
+      downPressed.value = true;
+    }
     if (e.key === ' ') {
       jumpPressed.value = true;
     }
@@ -81,6 +73,12 @@ onMounted(() => {
     }
     if (e.key === 'ArrowLeft') {
       leftPressed.value = false;
+    }
+    if (e.key === 'ArrowUp') {
+      upPressed.value = false;
+    }
+    if (e.key === 'ArrowDown') {
+      downPressed.value = false;
     }
   });
 
@@ -118,7 +116,7 @@ onMounted(() => {
 }
 
 .grid-item {
-  /* border: 1px solid red; */
+  border: 1px solid red;
   padding-top: 100%;
   /* Aspect ratio hack for squares */
   position: relative;
