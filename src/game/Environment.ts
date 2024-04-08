@@ -125,27 +125,25 @@ export default class Environment {
     } else if (bottom > this.map.length) {
       collisions.y = 1;
     }
-
+    // If we have a collision with the world boundries, return early
     if (collisions.x !== 0 || collisions.y !== 0) return collisions;
 
     // Check for collisions with map cells
-    if (this.map[top][left] === "solid" || this.map[bottom][left] === "solid") {
-      collisions.x = -1;
-    } else if (
-      this.map[top][right] === "solid" ||
-      this.map[bottom][right] === "solid"
-    ) {
-      collisions.x = 1;
-    } else if (
-      this.map[top][left] === "solid" ||
-      this.map[top][right] === "solid"
-    ) {
-      collisions.y = -1;
-    } else if (
-      this.map[bottom][left] === "solid" ||
-      this.map[bottom][right] === "solid"
-    ) {
-      collisions.y = 1;
+    const topCollision =
+      this.map[top][left] === "solid" || this.map[top][right] === "solid";
+    const bottomCollision =
+      this.map[bottom][left] === "solid" || this.map[bottom][right] === "solid";
+    const leftCollision =
+      this.map[top][left] === "solid" || this.map[bottom][left] === "solid";
+    const rightCollision =
+      this.map[top][right] === "solid" || this.map[bottom][right] === "solid";
+
+    if (topCollision || bottomCollision) {
+      collisions.y = topCollision ? 1 : -1;
+    }
+
+    if (leftCollision || rightCollision) {
+      collisions.x = leftCollision ? 1 : -1;
     }
     return collisions;
   }

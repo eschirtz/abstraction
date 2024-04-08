@@ -33,16 +33,14 @@ export default class Character {
 
     const bounceFactor = 0.5;
 
-    if (collisions.x === -1) {
-      this.velocityX = -this.velocityX * bounceFactor;
-    } else if (collisions.x === 1) {
-      this.velocityX = -this.velocityX * bounceFactor;
-    } else {
-      this.x = candidateX;
-      this.y = candidateY;
-    }
-    // Check for collisions in the x direction
+    this.x = candidateX;
+    this.y = candidateY;
 
-    // this.y = candidateY >= 3 ? 3 : candidateY;
+    if (collisions.x === -1 || collisions.x === 1) {
+      this.velocityX = -this.velocityX * bounceFactor;
+    }
+    if (collisions.y === -1 || collisions.y === 1) {
+      this.velocityY = -this.velocityY * bounceFactor;
+    }
   }
 }
