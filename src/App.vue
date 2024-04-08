@@ -19,7 +19,7 @@ function setCharacterStyle(c: Character) {
 }
 
 const env = new Environment();
-const character = new Character(0, 0);
+const character = new Character(0.5, 0.5);
 
 const leftPressed = ref(false);
 const rightPressed = ref(false);

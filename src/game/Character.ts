@@ -1,4 +1,4 @@
-import type Environment from "./Environment.1";
+import type Environment from "./Environment";
 
 export default class Character {
   x: number;
@@ -31,10 +31,12 @@ export default class Character {
       this.height
     );
 
+    const bounceFactor = 0.5;
+
     if (collisions.x === -1) {
-      console.log("Hit left wall");
+      this.velocityX = -this.velocityX * bounceFactor;
     } else if (collisions.x === 1) {
-      console.log("Hit right wall");
+      this.velocityX = -this.velocityX * bounceFactor;
     } else {
       this.x = candidateX;
       this.y = candidateY;
