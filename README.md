@@ -1,4 +1,4 @@
-# Fruitfull Survival
+# Fruitile Survival
 
 ## Character builder
 - Name (variables)
@@ -6,5 +6,3 @@
 - Mood (if)
     - Dig get hit by fruit
     - Hit someone by fruit
-
-

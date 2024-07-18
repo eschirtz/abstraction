@@ -2,14 +2,27 @@
   <div>
     <div class="text-center">
         <h1>
-            Sunnyslope Youth Center
-        </h1>
-        <p>Coding your first game</p>
+            Fruitile Survival
+        </h1>        
+        <p>
+            {{ name }}
+        </p>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { ref } from "vue";
+
+const name = ref("");
+
+function setName(_name: string) {
+    name.value = _name;
+}
+
+const runUserCode = new Function('setName', 'setName("You See Me")');
+
+runUserCode(setName);
 
 
 </script>
