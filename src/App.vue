@@ -1,22 +1,22 @@
 <template>
   <div>
-    <div class="text-center">
+    <div class="">
         <h1>
             Fruitile Survival
         </h1>        
         <p>
             {{ name }}
-        </p>
-        <textarea v-model="userCode"></textarea>
-        <button @click="runCode">Submit</button>
+        </p>        
+        <div id="editor"></div>
+        <button @click="runCode">Run code</button>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
-
-const userCode = ref("");
+import { onMounted, ref } from "vue";
+import { basicSetup, EditorView } from "codemirror"
+import { javascript } from "@codemirror/lang-javascript"
 
 const name = ref("");
 
@@ -24,11 +24,21 @@ function setName(_name: string) {
     name.value = _name;
 }
 
+let editorView: EditorView;
 
 function runCode() {
-    const runUserCode = new Function('setName', userCode.value);
+    const userCode = editorView.state.doc.toString();
+    const runUserCode = new Function('setName', userCode);
     runUserCode(setName);
 }
+
+onMounted(() => {
+    editorView = new EditorView({
+        doc: "console.log('Hello')\n",
+        extensions: [basicSetup, javascript()],
+        parent: document.getElementById('editor') as Element
+    });
+})
 
 
 
