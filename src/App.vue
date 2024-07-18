@@ -1,14 +1,14 @@
 <template>
   <div>
     <div class="">
-        <h1>
-            Fruitile Survival
-        </h1>        
-        <p>
-            {{ name }}
-        </p>        
-        <div id="editor"></div>
-        <button @click="runCode">Run code</button>
+      <h1>
+        Fruitile Survival
+      </h1>
+      <p>
+        {{ name }}
+      </p>
+      <div id="editor"></div>
+      <button @click="runCode">Run code</button>
     </div>
   </div>
 </template>
@@ -18,47 +18,59 @@ import { onMounted, ref } from "vue";
 import { basicSetup, EditorView } from "codemirror"
 import { javascript } from "@codemirror/lang-javascript"
 
+const STORAGE_KEY = "v0.code"
+
 const name = ref("");
 
 function setName(_name: string) {
-    name.value = _name;
+  name.value = _name;
 }
 
 let editorView: EditorView;
 
 function runCode() {
+  try {
     const userCode = editorView.state.doc.toString();
     const runUserCode = new Function('setName', userCode);
     runUserCode(setName);
+    localStorage.setItem(STORAGE_KEY, userCode);
+  } catch (e) {
+    alert(e);
+  }
 }
 
 onMounted(() => {
-    editorView = new EditorView({
-        doc: "console.log('Hello')\n",
-        extensions: [basicSetup, javascript()],
-        parent: document.getElementById('editor') as Element
-    });
-})
+  const placeholder = 
+  `// Hello Sunnyslope
+console.log("Welcome to Fruitile Survival")
+  `
+  const storedCode = localStorage.getItem(STORAGE_KEY) ?? placeholder;
+  editorView = new EditorView({
+    doc: storedCode,
+    extensions: [basicSetup, javascript()],
+    parent: document.getElementById('editor') as Element
+  });
+});
 
 
 
 </script>
 
 <style scoped>
-    h1 {
-        margin-top: 24px;
-        font-family: sans-serif;
-        font-size: 56px;
-    }
+h1 {
+  margin-top: 24px;
+  font-family: sans-serif;
+  font-size: 56px;
+}
 
-    p {
-        margin-top: 16px;
-        font-family: sans-serif;
-        font-size: 24px;
-        color: rgba(0, 0, 0, 0.5);
-    }
-    
-    .text-center {
-        text-align: center;
-    }
+p {
+  margin-top: 16px;
+  font-family: sans-serif;
+  font-size: 24px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.text-center {
+  text-align: center;
+}
 </style>
