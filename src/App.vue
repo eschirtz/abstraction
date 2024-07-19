@@ -1,14 +1,16 @@
 <template>
-  <div>
-    <div class="">
+  <div class="flex h-screen max-h-screen">
+    <div class="flex flex-col grow shrink">
+      <div id="editor" class="grow shrink min-h-0 overflow-auto"></div>
+      <button @click="runCode">Run code</button>
+    </div>
+    <div class="grow">
       <h1>
         Fruitile Survival
       </h1>
       <p>
         {{ name }}
       </p>
-      <div id="editor"></div>
-      <button @click="runCode">Run code</button>
     </div>
   </div>
 </template>
