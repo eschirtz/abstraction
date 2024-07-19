@@ -72,6 +72,16 @@ p {
   color: rgba(0, 0, 0, 0.5);
 }
 
+button {
+  background-color: black;
+  color: white;
+  height: 64px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 24px;
+  font-weight: bold;  
+  letter-spacing: 2px;
+}
+
 .text-center {
   text-align: center;
 }
