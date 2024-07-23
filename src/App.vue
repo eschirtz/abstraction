@@ -22,7 +22,6 @@ const STORAGE_KEY = "v0.code"
 
 const loading = ref(true);
 const character = ref<Character>({
-  bodyParts: ['body', 'head', 'legs']
 });
 
 function setName(_name: string) {
@@ -40,13 +39,17 @@ function setIsHappy(_isHappy: boolean) {
   character.value.isHappy = _isHappy;
 }
 
+function setAppearance(_bodyParts: string[]) {
+  character.value.bodyParts = _bodyParts;  
+}
+
 let editorView: EditorView;
 
 function runCode() {
   try {
     const userCode = editorView.state.doc.toString();
-    const runUserCode = new Function('setName', 'setAge', 'setIsHappy', userCode);
-    runUserCode(setName, setAge, setIsHappy);
+    const runUserCode = new Function('setName', 'setAge', 'setIsHappy', 'setAppearance', userCode);
+    runUserCode(setName, setAge, setIsHappy, setAppearance);
     loading.value = false;
     localStorage.setItem(STORAGE_KEY, userCode);
   } catch (e) {
