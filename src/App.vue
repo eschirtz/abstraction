@@ -1,17 +1,11 @@
 <template>
-  <div class="flex h-screen max-h-screen">
-    <div class="flex flex-col grow shrink">
+  <div class="flex h-screen max-h-screen grid grid-cols-2">
+    <div class="flex flex-col">
       <div id="editor" class="grow shrink min-h-0 overflow-auto"></div>
       <button @click="runCode">Run code</button>
     </div>
-    <div class="grow">
-      <h1>
-        Fruitile Survival
-      </h1>
-      <p>
-        {{ name }}
-      </p>
-    </div>
+    <GameSplash v-if="loading" />
+    <Game v-else :character-name="name" />
   </div>
 </template>
 
@@ -19,9 +13,12 @@
 import { onMounted, ref } from "vue";
 import { basicSetup, EditorView } from "codemirror"
 import { javascript } from "@codemirror/lang-javascript"
+import GameSplash from "./views/GameSplash.vue";
+import Game from "./views/Game.vue";
 
 const STORAGE_KEY = "v0.code"
 
+const loading = ref(true);
 const name = ref("");
 
 function setName(_name: string) {
@@ -35,6 +32,7 @@ function runCode() {
     const userCode = editorView.state.doc.toString();
     const runUserCode = new Function('setName', userCode);
     runUserCode(setName);
+    loading.value = false;
     localStorage.setItem(STORAGE_KEY, userCode);
   } catch (e) {
     alert(e);
