@@ -21,7 +21,9 @@ import type { Character } from "./views/Game.vue"
 const STORAGE_KEY = "v0.code"
 
 const loading = ref(true);
-const character = ref<Character>({});
+const character = ref<Character>({
+  bodyParts: ['body', 'head', 'legs']
+});
 
 function setName(_name: string) {
   if (typeof _name !== 'string' || !_name.length) throw new Error("Name must be of type \"String\"");
