@@ -24,7 +24,7 @@ const loading = ref(true);
 const character = ref<Character>({});
 
 function setName(_name: string) {
-  if (typeof _name !== 'string') throw new Error("Name must be of type \"String\"");
+  if (typeof _name !== 'string' || !_name.length) throw new Error("Name must be of type \"String\"");
   character.value.name = _name;
 }
 
@@ -54,8 +54,16 @@ function runCode() {
 
 onMounted(() => {
   const placeholder =
-    `// Hello Sunnyslope
-console.log("Welcome to Fruitile Survival")`
+    `/**
+ * Coding your first game, class #2
+ * 
+ * Functions:
+ * - setName(<string>)
+ * - setAge(<number>)
+ * - setIsHappy(<boolean>)
+ * - setAppearance(<array>)
+ */
+`
   const storedCode = localStorage.getItem(STORAGE_KEY) ?? placeholder;
   editorView = new EditorView({
     doc: storedCode,
