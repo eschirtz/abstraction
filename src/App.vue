@@ -5,7 +5,7 @@
       <button @click="runCode">Run code</button>
     </div>
     <GameSplash v-if="loading" />
-    <Game v-else :character-name="name" />
+    <Game v-else :character="character" />
   </div>
 </template>
 
@@ -16,14 +16,26 @@ import { oneDark } from "@codemirror/theme-one-dark";
 import { javascript } from "@codemirror/lang-javascript"
 import GameSplash from "./views/GameSplash.vue";
 import Game from "./views/Game.vue";
+import type { Character } from "./views/Game.vue"
 
 const STORAGE_KEY = "v0.code"
 
 const loading = ref(true);
-const name = ref("");
+const character = ref<Character>({});
 
 function setName(_name: string) {
-  name.value = _name;
+  if (typeof _name !== 'string') throw new Error("Name must be of type \"String\"");
+  character.value.name = _name;
+}
+
+function setAge(_age: number) {
+  if (typeof _age !== 'number') throw new Error("Age must be of type \"Number\"");
+  character.value.age = _age;
+}
+
+function setIsHappy(_isHappy: boolean) {
+  if (typeof _isHappy !== 'boolean') throw new Error("isHappy must be of type \"Boolean\"");
+  character.value.isHappy = _isHappy;
 }
 
 let editorView: EditorView;
@@ -31,8 +43,8 @@ let editorView: EditorView;
 function runCode() {
   try {
     const userCode = editorView.state.doc.toString();
-    const runUserCode = new Function('setName', userCode);
-    runUserCode(setName);
+    const runUserCode = new Function('setName', 'setAge', 'setIsHappy', userCode);
+    runUserCode(setName, setAge, setIsHappy);
     loading.value = false;
     localStorage.setItem(STORAGE_KEY, userCode);
   } catch (e) {
@@ -41,15 +53,15 @@ function runCode() {
 }
 
 onMounted(() => {
-  const placeholder = 
-  `// Hello Sunnyslope
+  const placeholder =
+    `// Hello Sunnyslope
 console.log("Welcome to Fruitile Survival")`
   const storedCode = localStorage.getItem(STORAGE_KEY) ?? placeholder;
   editorView = new EditorView({
     doc: storedCode,
-    extensions: [basicSetup, javascript(), oneDark],    
+    extensions: [basicSetup, javascript(), oneDark],
     parent: document.getElementById('editor') as Element
-  });  
+  });
 });
 
 
@@ -76,7 +88,7 @@ button {
   height: 64px;
   font-family: 'Courier New', Courier, monospace;
   font-size: 24px;
-  font-weight: bold;  
+  font-weight: bold;
   letter-spacing: 2px;
 }
 
@@ -85,6 +97,7 @@ button {
 }
 
 #editor {
-  background: #282c34; /* Match one-dark theme */
+  background: #282c34;
+  /* Match one-dark theme */
 }
 </style>
