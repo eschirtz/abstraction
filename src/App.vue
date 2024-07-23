@@ -12,6 +12,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
 import { basicSetup, EditorView } from "codemirror"
+import { oneDark } from "@codemirror/theme-one-dark";
 import { javascript } from "@codemirror/lang-javascript"
 import GameSplash from "./views/GameSplash.vue";
 import Game from "./views/Game.vue";
@@ -42,14 +43,13 @@ function runCode() {
 onMounted(() => {
   const placeholder = 
   `// Hello Sunnyslope
-console.log("Welcome to Fruitile Survival")
-  `
+console.log("Welcome to Fruitile Survival")`
   const storedCode = localStorage.getItem(STORAGE_KEY) ?? placeholder;
   editorView = new EditorView({
     doc: storedCode,
-    extensions: [basicSetup, javascript()],
+    extensions: [basicSetup, javascript(), oneDark],    
     parent: document.getElementById('editor') as Element
-  });
+  });  
 });
 
 
@@ -82,5 +82,9 @@ button {
 
 .text-center {
   text-align: center;
+}
+
+#editor {
+  background: #282c34; /* Match one-dark theme */
 }
 </style>
