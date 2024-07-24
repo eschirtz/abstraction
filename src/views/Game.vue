@@ -3,9 +3,10 @@
     <h1>Name: <span>{{ character.name }}</span></h1>
     <h1>Age: <span>{{ character.age }}</span></h1>
     <h1>Is Happy: <span>{{ character.isHappy }}</span></h1>
+    
     <div>
       <div class="character flex flex-col items-center">
-        <img v-for="part in character.bodyParts" :src="getURL(part)"></img>
+        <img v-for="part in character.bodyParts ?? []" :src="getURL(part)"></img>
       </div>
     </div>
   </div>
