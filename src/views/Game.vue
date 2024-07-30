@@ -1,8 +1,8 @@
 <template>
   <div class="bg">
-    <h1>Name: <span>{{ character.name }}</span></h1>
-    <h1>Age: <span>{{ character.age }}</span></h1>
-    <h1>Is Happy: <span>{{ character.isHappy }}</span></h1>
+    <div v-if="character.name" class="p-4" style="background-color: darkred;">
+      <h1 class="text-center text-lg font-sans font-bold text-white tracking-wider">{{ character.name }}</h1>
+    </div>
     
     <Character :segments="character.bodyParts ?? []" class="character"/>
   </div>
