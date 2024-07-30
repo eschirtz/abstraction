@@ -4,7 +4,7 @@
     <h1>Age: <span>{{ character.age }}</span></h1>
     <h1>Is Happy: <span>{{ character.isHappy }}</span></h1>
     
-    <Character :segments="character.bodyParts ?? []" style="height: 128px;" />
+    <Character :segments="character.bodyParts ?? []" class="character"/>
   </div>
 </template>
 
@@ -32,5 +32,13 @@ defineEmits({
 <style scoped>
 .bg {
   background-color: black;
+  position: relative;
+}
+
+.character {
+  --character-height: 256px;
+  height: var(--character-height);
+  position: absolute;
+  top: calc(100vh - var(--character-height) - 16px);
 }
 </style>
