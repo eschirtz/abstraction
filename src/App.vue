@@ -22,6 +22,8 @@ const STORAGE_KEY = "v0.code"
 
 const loading = ref(true);
 const character = ref<Character>({
+    x: 0,
+    y: 0
 });
 
 function setName(_name: string) {
@@ -34,13 +36,24 @@ function setAge(_age: number) {
   character.value.age = _age;
 }
 
-function setIsHappy(_isHappy: boolean) {
-  if (typeof _isHappy !== 'boolean') throw new Error("isHappy must be of type \"Boolean\"");
-  character.value.isHappy = _isHappy;
-}
-
 function setAppearance(_bodyParts: string[]) {
   character.value.bodyParts = _bodyParts;  
+}
+
+function setPosition(x: number, y?: number) {
+  character.value.x = x;
+  character.value.y = y ?? character.value.y;
+}
+
+let leftKeyHandler: (character: Character) => void;
+let rightKeyHandler: (character: Character) => void;
+
+function onLeftKeyPressed(cb: (character: Character) => void) {
+  leftKeyHandler = cb;
+}
+
+function onRightKeyPressed(cb: (character: Character) => void) {
+  rightKeyHandler = cb;
 }
 
 let editorView: EditorView;
@@ -48,8 +61,8 @@ let editorView: EditorView;
 function runCode() {
   try {
     const userCode = editorView.state.doc.toString();
-    const runUserCode = new Function('setName', 'setAge', 'setIsHappy', 'setAppearance', userCode);
-    runUserCode(setName, setAge, setIsHappy, setAppearance);
+    const runUserCode = new Function('setName', 'setAge', 'setAppearance', 'setPosition', 'onLeftKeyPressed', 'onRightKeyPressed', userCode);
+    runUserCode(setName, setAge, setAppearance, setPosition, onLeftKeyPressed, onRightKeyPressed);
     loading.value = false;
     localStorage.setItem(STORAGE_KEY, userCode);
   } catch (e) {
@@ -65,8 +78,9 @@ onMounted(() => {
  * Functions:
  * - setName(<string>)
  * - setAge(<number>)
- * - setIsHappy(<boolean>)
- * - setAppearance(<array>)
+ * - setPosition(x: <number>, y: <number>)
+ * - onRightKeyPressed(<Function>)
+ * - onLeftKeyPressed(<Function>)
  */
 `
   const storedCode = localStorage.getItem(STORAGE_KEY) ?? placeholder;
@@ -75,6 +89,21 @@ onMounted(() => {
     extensions: [basicSetup, javascript(), oneDark],
     parent: document.getElementById('editor') as Element
   });
+
+  window.addEventListener('keydown', e => {
+    switch (e.key) {
+      case 'ArrowLeft':
+      case 'a':
+        if (leftKeyHandler) leftKeyHandler(character.value);
+        break;
+      case 'ArrowRight':
+      case 'd':
+        if (rightKeyHandler) rightKeyHandler(character.value);
+        break;
+      default:
+        break;
+    }
+  })
 });
 
 

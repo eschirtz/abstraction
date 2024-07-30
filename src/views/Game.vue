@@ -9,6 +9,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
 import Character from "./Character.vue"
 
 export interface Character {
@@ -16,6 +17,8 @@ export interface Character {
   age?: number;
   isHappy?: boolean;
   bodyParts?: string[];
+  x: number;
+  y: number;
 }
 
 const props = defineProps<{
@@ -26,6 +29,11 @@ defineEmits({
 
 });
 
+const characterX = computed(() => {
+  const x = props.character.x
+  return x + 'px'
+})
+
 
 </script>
 
@@ -33,12 +41,16 @@ defineEmits({
 .bg {
   background-color: black;
   position: relative;
+  overflow: hidden;
 }
 
 .character {
+  --character-width: 128px;
   --character-height: 256px;
+  width: var(--character-width);
   height: var(--character-height);
   position: absolute;
-  top: calc(100vh - var(--character-height) - 16px);
+  top: calc(100vh - var(--character-height));
+  left: calc(50% - (var(--character-width) / 2) + v-bind(characterX));
 }
 </style>
