@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-screen max-h-screen grid grid-cols-2">
-    <div class="flex flex-col">
+    <div class="flex flex-col code-window">
       <div id="editor" class="grow shrink min-h-0 overflow-auto"></div>
       <button @click="runCode">Run code</button>
     </div>
@@ -96,13 +96,19 @@ p {
 }
 
 button {
-  background-color: black;
-  color: white;
+  background-color: white;
+  color: black;
   height: 64px;
   font-family: 'Courier New', Courier, monospace;
   font-size: 24px;
   font-weight: bold;
   letter-spacing: 2px;
+  margin: 16px;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: rgb(240, 240, 240);
 }
 
 .text-center {
@@ -112,5 +118,9 @@ button {
 #editor {
   background: #282c34;
   /* Match one-dark theme */
+}
+
+.code-window {
+  background-color: #282c34;
 }
 </style>
