@@ -2,8 +2,7 @@
   <div class="bg">
     <div v-if="character.name" class="p-4" style="background-color: darkred;">
       <h1 class="text-center text-lg font-sans font-bold text-white tracking-wider">{{ character.name }}</h1>
-    </div>
-    
+    </div>    
     <Character :segments="character.bodyParts ?? []" class="character"/>
   </div>
 </template>

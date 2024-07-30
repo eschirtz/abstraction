@@ -47,6 +47,7 @@ function setPosition(x: number, y?: number) {
 
 let leftKeyHandler: (character: Character) => void;
 let rightKeyHandler: (character: Character) => void;
+let animationFrameHandler: (character: Character) => void;
 
 function onLeftKeyPressed(cb: (character: Character) => void) {
   leftKeyHandler = cb;
@@ -56,13 +57,22 @@ function onRightKeyPressed(cb: (character: Character) => void) {
   rightKeyHandler = cb;
 }
 
+function onAnimationFrame(cb: (character: Character) => void) {
+  animationFrameHandler = cb;
+}
+
+function animationFrameHandlerWrapper() {
+  if (animationFrameHandler) animationFrameHandler(character.value);
+  window.requestAnimationFrame(animationFrameHandlerWrapper);
+}
+
 let editorView: EditorView;
 
 function runCode() {
   try {
     const userCode = editorView.state.doc.toString();
-    const runUserCode = new Function('setName', 'setAge', 'setAppearance', 'setPosition', 'onLeftKeyPressed', 'onRightKeyPressed', userCode);
-    runUserCode(setName, setAge, setAppearance, setPosition, onLeftKeyPressed, onRightKeyPressed);
+    const runUserCode = new Function('setName', 'setAge', 'setAppearance', 'setPosition', 'onLeftKeyPressed', 'onRightKeyPressed', 'onAnimationFrame', userCode);
+    runUserCode(setName, setAge, setAppearance, setPosition, onLeftKeyPressed, onRightKeyPressed, onAnimationFrame);
     loading.value = false;
     localStorage.setItem(STORAGE_KEY, userCode);
   } catch (e) {
@@ -81,6 +91,7 @@ onMounted(() => {
  * - setPosition(x: <number>, y: <number>)
  * - onRightKeyPressed(<Function>)
  * - onLeftKeyPressed(<Function>)
+ * - onAnimationFrame(<Function>)
  */
 `
   const storedCode = localStorage.getItem(STORAGE_KEY) ?? placeholder;
@@ -104,6 +115,8 @@ onMounted(() => {
         break;
     }
   })
+
+  window.requestAnimationFrame(animationFrameHandlerWrapper)
 });
 
 
