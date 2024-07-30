@@ -28,9 +28,14 @@ defineEmits({
 
 });
 
+const characterY = computed(() => {
+  const y = props.character.y;
+  return y + 'px';
+})
+
 const characterX = computed(() => {
-  const x = props.character.x
-  return x + 'px'
+  const x = props.character.x;
+  return x + 'px';
 })
 
 
@@ -49,7 +54,7 @@ const characterX = computed(() => {
   width: var(--character-width);
   height: var(--character-height);
   position: absolute;
-  top: calc(100vh - var(--character-height));
+  top: calc(100vh - var(--character-height) - v-bind(characterY));
   left: calc(50% - (var(--character-width) / 2) + v-bind(characterX));
 }
 </style>

@@ -47,6 +47,7 @@ function setPosition(x: number, y?: number) {
 
 let leftKeyHandler: (character: Character) => void;
 let rightKeyHandler: (character: Character) => void;
+let spacebarHandler: (character: Character) => void;
 let animationFrameHandler: (character: Character) => void;
 
 function onLeftKeyPressed(cb: (character: Character) => void) {
@@ -55,6 +56,10 @@ function onLeftKeyPressed(cb: (character: Character) => void) {
 
 function onRightKeyPressed(cb: (character: Character) => void) {
   rightKeyHandler = cb;
+}
+
+function onSpacebarPressed(cb: (character: Character) => void) {
+  spacebarHandler = cb;
 }
 
 function onAnimationFrame(cb: (character: Character) => void) {
@@ -71,8 +76,8 @@ let editorView: EditorView;
 function runCode() {
   try {
     const userCode = editorView.state.doc.toString();
-    const runUserCode = new Function('setName', 'setAge', 'setAppearance', 'setPosition', 'onLeftKeyPressed', 'onRightKeyPressed', 'onAnimationFrame', userCode);
-    runUserCode(setName, setAge, setAppearance, setPosition, onLeftKeyPressed, onRightKeyPressed, onAnimationFrame);
+    const runUserCode = new Function('setName', 'setAge', 'setAppearance', 'setPosition', 'onLeftKeyPressed', 'onRightKeyPressed', 'onSpacebarPressed', 'onAnimationFrame', userCode);
+    runUserCode(setName, setAge, setAppearance, setPosition, onLeftKeyPressed, onRightKeyPressed, onSpacebarPressed, onAnimationFrame);
     loading.value = false;
     localStorage.setItem(STORAGE_KEY, userCode);
   } catch (e) {
@@ -102,6 +107,9 @@ onMounted(() => {
   });
 
   window.addEventListener('keydown', e => {
+    // @ts-ignore
+    if(e.target.tagName === "BODY") e.preventDefault();
+    else return;
     switch (e.key) {
       case 'ArrowLeft':
       case 'a':
@@ -110,6 +118,9 @@ onMounted(() => {
       case 'ArrowRight':
       case 'd':
         if (rightKeyHandler) rightKeyHandler(character.value);
+        break;
+      case ' ':
+        if (spacebarHandler) spacebarHandler(character.value);
         break;
       default:
         break;
