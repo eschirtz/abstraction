@@ -1,16 +1,20 @@
 <template>
   <div class="bg">
-    <div v-if="character.name" class="p-4" style="background-color: darkred;">
-      <h1 class="text-center text-lg font-sans font-bold text-white tracking-wider">{{ character.name }}</h1>
-    </div>    
+    <div v-if="character.name" class="flex">
+      <div v-for="c of [character, opponent]" :key="c.name" class="flex grow">
+        <h1 class="text-center text-lg font-sans font-bold text-white tracking-wider">{{ c.name }}: {{  c.score ?? 0 }}</h1>
+      </div>
+    </div>
     <Character :segments="character.bodyParts ?? []" class="character"/>
     <Character :segments="opponent.bodyParts ?? []" class="opponent"/>
+    <Fruit v-for="f of fruit" :key="f.x + f.y" :x="f.x" :y="f.y"/>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed } from "vue";
 import Character from "./Character.vue"
+import Fruit from "./Fruit.vue"
 
 export interface Character {
   name?: string;
@@ -19,11 +23,18 @@ export interface Character {
   bodyParts?: string[];
   x: number;
   y: number;
+  score?: number;
+}
+
+export interface Fruit {
+  x: number;
+  y: number;
 }
 
 const props = defineProps<{
   character: Character;
   opponent: Character;
+  fruit: Fruit[];
 }>();
 
 defineEmits({

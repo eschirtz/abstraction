@@ -5,7 +5,7 @@
       <button @click="runCode">Run code</button>
     </div>
     <GameSplash v-if="loading" />
-    <Game v-else :character="character" :opponent="opponent" />
+    <Game v-else :character="character" :opponent="opponent" :fruit="fruit" />
   </div>
 </template>
 
@@ -34,27 +34,28 @@ const opponent = ref<Character>({
   y: 0
 });
 
+const fruit = ref([{ x: 0, y: 200 }]);
+
 function subscribeToOpponent(name: string) {
   const opponentRef = fb.ref(fb.db, 'users/' + name);
-  fb.onValue(opponentRef, (snapshot) => {
+  fb.onValue(opponentRef, (snapshot) => {    
     const data = snapshot.val();
-    console.log('data', data);
     if (data) {
       opponent.value = data;
     }
   });
 }
 
-function setName(_name: string) {
-  if (typeof _name !== 'string' || !_name.length) throw new Error("Name must be of type \"String\"");
-  character.value.name = _name;
-  fb.setCharacter({ ...character.value, name: _name });
-}
-
 function setOpponentName(_name: string) {
   if (typeof _name !== 'string' || !_name.length) throw new Error("Opponent name must be of type \"String\"");
   opponent.value.name = _name;
   subscribeToOpponent(_name);
+}
+
+function setName(_name: string) {
+  if (typeof _name !== 'string' || !_name.length) throw new Error("Name must be of type \"String\"");
+  character.value.name = _name;
+  fb.setCharacter({ ...character.value, name: _name });
 }
 
 function setAppearance(_bodyParts: string[]) {
@@ -109,8 +110,31 @@ let editorView: EditorView;
 function runCode() {
   try {
     const userCode = editorView.state.doc.toString();
-    const runUserCode = new Function('setName', 'setOpponentName', 'setAppearance', 'setPosition', 'onLeftKeyPressed', 'onRightKeyPressed', 'onUpKeyPressed', 'onDownKeyPressed', 'onSpacebarPressed', 'onAnimationFrame', userCode);
-    runUserCode(setName, setOpponentName, setAppearance, setPosition, onLeftKeyPressed, onRightKeyPressed, onUpKeyPressed, onDownKeyPressed, onSpacebarPressed, onAnimationFrame);
+    const runUserCode = new Function(
+      'setName', 
+      'setOpponentName', 
+      'setAppearance', 
+      'setPosition', 
+      'onLeftKeyPressed', 
+      'onRightKeyPressed', 
+      'onUpKeyPressed', 
+      'onDownKeyPressed', 
+      'onSpacebarPressed', 
+      'onAnimationFrame', 
+      userCode
+    );    
+    runUserCode(
+      setName,
+      setOpponentName,
+      setAppearance,
+      setPosition,
+      onLeftKeyPressed,
+      onRightKeyPressed,
+      onUpKeyPressed,
+      onDownKeyPressed,
+      onSpacebarPressed,
+      onAnimationFrame
+    );
     loading.value = false;
     localStorage.setItem(STORAGE_KEY, userCode);
   } catch (e) {
@@ -151,6 +175,14 @@ onMounted(() => {
       case 'ArrowRight':
       case 'd':
         if (rightKeyHandler) rightKeyHandler(character.value);
+        break;
+      case 'ArrowUp':
+      case 'w':
+        if (upKeyHandler) upKeyHandler(character.value);
+        break;
+      case 'ArrowDown':
+      case 's':
+        if (downKeyHandler) downKeyHandler(character.value);
         break;
       case ' ':
         if (spacebarHandler) spacebarHandler(character.value);

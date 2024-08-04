@@ -2,8 +2,6 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, onValue } from "firebase/database";
 import type { Character } from "./views/Game.vue"
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyB-F9ktzSK55uH8tM61YXv7JXf8rmf1rlc",
   authDomain: "sunnyslope-youth-center.firebaseapp.com",
@@ -13,11 +11,16 @@ const firebaseConfig = {
   appId: "1:470435442765:web:ff71cca26a84037b87ac04",
   measurementId: "G-Z97VXFWPQZ",
 };
-const app = initializeApp(firebaseConfig);
 
+const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 export default function useFirebase() {
+
+  /**
+   * Update the character in the database
+   * @param c
+   */
   function setCharacter(
     c: Character
   ) {
