@@ -4,6 +4,7 @@
       <h1 class="text-center text-lg font-sans font-bold text-white tracking-wider">{{ character.name }}</h1>
     </div>    
     <Character :segments="character.bodyParts ?? []" class="character"/>
+    <Character :segments="opponent.bodyParts ?? []" class="opponent"/>
   </div>
 </template>
 
@@ -22,6 +23,7 @@ export interface Character {
 
 const props = defineProps<{
   character: Character;
+  opponent: Character;
 }>();
 
 defineEmits({
@@ -35,6 +37,16 @@ const characterY = computed(() => {
 
 const characterX = computed(() => {
   const x = props.character.x;
+  return x + 'px';
+})
+
+const opponentY = computed(() => {
+  const y = props.opponent.y;
+  return y + 'px';
+})
+
+const opponentX = computed(() => {
+  const x = props.opponent.x;
   return x + 'px';
 })
 
@@ -56,5 +68,15 @@ const characterX = computed(() => {
   position: absolute;
   top: calc(100vh - var(--character-height) - v-bind(characterY));
   left: calc(50% - (var(--character-width) / 2) + v-bind(characterX));
+}
+
+.opponent {
+  --character-width: 128px;
+  --character-height: 256px;
+  width: var(--character-width);
+  height: var(--character-height);
+  position: absolute;
+  top: calc(100vh - var(--character-height) - v-bind(opponentY));
+  left: calc(50% - (var(--character-width) / 2) + v-bind(opponentX));
 }
 </style>

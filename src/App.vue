@@ -5,7 +5,7 @@
       <button @click="runCode">Run code</button>
     </div>
     <GameSplash v-if="loading" />
-    <Game v-else :character="character" />
+    <Game v-else :character="character" :opponent="opponent" />
   </div>
 </template>
 
@@ -14,39 +14,64 @@ import { onMounted, ref } from "vue";
 import { basicSetup, EditorView } from "codemirror"
 import { oneDark } from "@codemirror/theme-one-dark";
 import { javascript } from "@codemirror/lang-javascript"
+import useFirebase from "./useFirebase";
 import GameSplash from "./views/GameSplash.vue";
 import Game from "./views/Game.vue";
 import type { Character } from "./views/Game.vue"
+
+const fb = useFirebase();
 
 const STORAGE_KEY = "v0.code"
 
 const loading = ref(true);
 const character = ref<Character>({
-    x: 0,
-    y: 0
+  x: 0,
+  y: 0
 });
+
+const opponent = ref<Character>({
+  x: 0,
+  y: 0
+});
+
+function subscribeToOpponent(name: string) {
+  const opponentRef = fb.ref(fb.db, 'users/' + name);
+  fb.onValue(opponentRef, (snapshot) => {
+    const data = snapshot.val();
+    console.log('data', data);
+    if (data) {
+      opponent.value = data;
+    }
+  });
+}
 
 function setName(_name: string) {
   if (typeof _name !== 'string' || !_name.length) throw new Error("Name must be of type \"String\"");
   character.value.name = _name;
+  fb.setCharacter({ ...character.value, name: _name });
 }
 
-function setAge(_age: number) {
-  if (typeof _age !== 'number') throw new Error("Age must be of type \"Number\"");
-  character.value.age = _age;
+function setOpponentName(_name: string) {
+  if (typeof _name !== 'string' || !_name.length) throw new Error("Opponent name must be of type \"String\"");
+  opponent.value.name = _name;
+  subscribeToOpponent(_name);
 }
 
 function setAppearance(_bodyParts: string[]) {
-  character.value.bodyParts = _bodyParts;  
+  character.value.bodyParts = _bodyParts;
+  fb.setCharacter({ ...character.value, bodyParts: _bodyParts });
 }
 
 function setPosition(x: number, y?: number) {
   character.value.x = x;
   character.value.y = y ?? character.value.y;
+  fb.setCharacter({ ...character.value, x, y: y ?? character.value.y });
 }
 
 let leftKeyHandler: (character: Character) => void;
 let rightKeyHandler: (character: Character) => void;
+let upKeyHandler: (character: Character) => void;
+let downKeyHandler: (character: Character) => void;
 let spacebarHandler: (character: Character) => void;
 let animationFrameHandler: (character: Character) => void;
 
@@ -56,6 +81,14 @@ function onLeftKeyPressed(cb: (character: Character) => void) {
 
 function onRightKeyPressed(cb: (character: Character) => void) {
   rightKeyHandler = cb;
+}
+
+function onUpKeyPressed(cb: (character: Character) => void) {
+  upKeyHandler = cb;
+}
+
+function onDownKeyPressed(cb: (character: Character) => void) {
+  downKeyHandler = cb;
 }
 
 function onSpacebarPressed(cb: (character: Character) => void) {
@@ -76,8 +109,8 @@ let editorView: EditorView;
 function runCode() {
   try {
     const userCode = editorView.state.doc.toString();
-    const runUserCode = new Function('setName', 'setAge', 'setAppearance', 'setPosition', 'onLeftKeyPressed', 'onRightKeyPressed', 'onSpacebarPressed', 'onAnimationFrame', userCode);
-    runUserCode(setName, setAge, setAppearance, setPosition, onLeftKeyPressed, onRightKeyPressed, onSpacebarPressed, onAnimationFrame);
+    const runUserCode = new Function('setName', 'setOpponentName', 'setAppearance', 'setPosition', 'onLeftKeyPressed', 'onRightKeyPressed', 'onUpKeyPressed', 'onDownKeyPressed', 'onSpacebarPressed', 'onAnimationFrame', userCode);
+    runUserCode(setName, setOpponentName, setAppearance, setPosition, onLeftKeyPressed, onRightKeyPressed, onUpKeyPressed, onDownKeyPressed, onSpacebarPressed, onAnimationFrame);
     loading.value = false;
     localStorage.setItem(STORAGE_KEY, userCode);
   } catch (e) {
@@ -88,7 +121,7 @@ function runCode() {
 onMounted(() => {
   const placeholder =
     `/**
- * Coding your first game, class #2
+ * Coding your first game, class #3
  * 
  * Functions:
  * - setName(<string>)
@@ -108,7 +141,7 @@ onMounted(() => {
 
   window.addEventListener('keydown', e => {
     // @ts-ignore
-    if(e.target.tagName === "BODY") e.preventDefault();
+    if (e.target.tagName === "BODY") e.preventDefault();
     else return;
     switch (e.key) {
       case 'ArrowLeft':
