@@ -7,7 +7,7 @@
     </div>
     <Character :segments="me.bodyParts ?? []" class="character" :style="position.getStyle(me.x, me.y, me.height)" />
     <Character :segments="opponent.bodyParts ?? []" class="opponent character" :style="position.getStyle(opponent.x, opponent.y, opponent.height)" />
-    <Fruit v-for="f of fruit" :key="f.x + f.y" :x="f.x" :y="f.y"/>
+    <Fruit v-for="f of fruit" :style="position.getStyle(f.x, f.y, 56)" />
   </div>
 </template>
 
