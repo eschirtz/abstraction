@@ -26,6 +26,7 @@ export interface Character {
   bodyParts?: string[];
   x: number;
   y: number;
+  width: number;
   height: number;
   score?: number;
 }
@@ -33,6 +34,8 @@ export interface Character {
 export interface Fruit {
   x: number;
   y: number;
+  width: number;
+  height: number;
 }
 
 const props = defineProps<{
@@ -76,7 +79,7 @@ const opponentX = computed(() => {
 }
 
 .character {
-  --character-width: 128px;
+  --character-width: 96px;
   --character-height: 256px;
   width: var(--character-width);
   height: var(--character-height);
