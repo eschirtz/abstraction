@@ -5,7 +5,7 @@
       <button @click="runCode">Run code</button>
     </div>
     <GameSplash v-if="loading" />
-    <Game v-else :character="character" :opponent="opponent" :fruit="fruit" />
+    <Game v-else :me="character" :opponent="opponent" :fruit="fruit" />
   </div>
 </template>
 
@@ -26,15 +26,17 @@ const STORAGE_KEY = "v0.code"
 const loading = ref(true);
 const character = ref<Character>({
   x: 0,
-  y: 0
+  y: 0,
+  height: 256,
 });
 
 const opponent = ref<Character>({
   x: 0,
-  y: 0
+  y: 0,
+  height: 256,
 });
 
-const fruit = ref([{ x: 0, y: 200 }]);
+const fruit = ref([{ x: 0, y: 400 }]);
 
 function subscribeToOpponent(name: string) {
   const opponentRef = fb.ref(fb.db, 'users/' + name);
@@ -67,6 +69,35 @@ function setPosition(x: number, y?: number) {
   character.value.x = x;
   character.value.y = y ?? character.value.y;
   fb.setCharacter({ ...character.value, x, y: y ?? character.value.y });
+}
+
+function checkForCollisions(): ('fruit' | 'opponent')[] {
+  const collisions: ('fruit' | 'opponent')[] = [];
+
+  const CharacterWidth = 128;
+  const CharacterHeight = 256;
+
+  const FruitWidth = 56;
+  const FruitHeight = FruitWidth;
+
+  // Check for collisions with fruit
+  fruit.value.forEach((f) => {
+    if (
+      character.value.x < f.x + FruitWidth &&
+      character.value.x + CharacterWidth > f.x &&
+      character.value.y < f.y + FruitHeight &&
+      character.value.y + CharacterHeight > f.y
+    ) {
+      collisions.push('fruit');
+      character.value.score = (character.value.score ?? 0) + 1;
+    }
+  });
+
+  collisions.forEach((collision) => {
+    // alert(`You collided with ${collision}`);
+  });
+
+  return [];
 }
 
 let leftKeyHandler: (character: Character) => void;
@@ -120,7 +151,8 @@ function runCode() {
       'onUpKeyPressed', 
       'onDownKeyPressed', 
       'onSpacebarPressed', 
-      'onAnimationFrame', 
+      'onAnimationFrame',
+      'checkForCollisions',
       userCode
     );    
     runUserCode(
@@ -133,7 +165,8 @@ function runCode() {
       onUpKeyPressed,
       onDownKeyPressed,
       onSpacebarPressed,
-      onAnimationFrame
+      onAnimationFrame,
+      checkForCollisions
     );
     loading.value = false;
     localStorage.setItem(STORAGE_KEY, userCode);

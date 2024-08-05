@@ -35,5 +35,6 @@ img {
   position: absolute;
   top: calc(100vh - var(--height) - v-bind(Y));
   left: calc(50% - (var(--width) / 2) + v-bind(X));
+  border: red solid 1px;
 }
 </style>

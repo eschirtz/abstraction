@@ -1,20 +1,23 @@
 <template>
   <div class="bg">
-    <div v-if="character.name" class="flex">
-      <div v-for="c of [character, opponent]" :key="c.name" class="flex grow">
+    <div v-if="me.name" class="flex">
+      <div v-for="c of [me, opponent]" :key="c.name" class="flex grow">
         <h1 class="text-center text-lg font-sans font-bold text-white tracking-wider">{{ c.name }}: {{  c.score ?? 0 }}</h1>
       </div>
     </div>
-    <Character :segments="character.bodyParts ?? []" class="character"/>
-    <Character :segments="opponent.bodyParts ?? []" class="opponent"/>
+    <Character :segments="me.bodyParts ?? []" class="character" :style="position.getStyle(me.x, me.y, me.height)" />
+    <Character :segments="opponent.bodyParts ?? []" class="opponent character" :style="position.getStyle(opponent.x, opponent.y, opponent.height)" />
     <Fruit v-for="f of fruit" :key="f.x + f.y" :x="f.x" :y="f.y"/>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed } from "vue";
+import usePosition from "@/usePosition";
 import Character from "./Character.vue"
 import Fruit from "./Fruit.vue"
+
+const position = usePosition();
 
 export interface Character {
   name?: string;
@@ -23,6 +26,7 @@ export interface Character {
   bodyParts?: string[];
   x: number;
   y: number;
+  height: number;
   score?: number;
 }
 
@@ -32,7 +36,7 @@ export interface Fruit {
 }
 
 const props = defineProps<{
-  character: Character;
+  me: Character;
   opponent: Character;
   fruit: Fruit[];
 }>();
@@ -41,13 +45,13 @@ defineEmits({
 
 });
 
-const characterY = computed(() => {
-  const y = props.character.y;
+const meY = computed(() => {
+  const y = props.me.y;
   return y + 'px';
 })
 
-const characterX = computed(() => {
-  const x = props.character.x;
+const meX = computed(() => {
+  const x = props.me.x;
   return x + 'px';
 })
 
@@ -76,18 +80,16 @@ const opponentX = computed(() => {
   --character-height: 256px;
   width: var(--character-width);
   height: var(--character-height);
-  position: absolute;
-  top: calc(100vh - var(--character-height) - v-bind(characterY));
-  left: calc(50% - (var(--character-width) / 2) + v-bind(characterX));
+  border: red solid 1px;
+}
+
+.me {  
+  top: calc(100vh - var(--character-height) - v-bind(meY));
+  left: calc(50% + v-bind(meX));
 }
 
 .opponent {
-  --character-width: 128px;
-  --character-height: 256px;
-  width: var(--character-width);
-  height: var(--character-height);
-  position: absolute;
   top: calc(100vh - var(--character-height) - v-bind(opponentY));
-  left: calc(50% - (var(--character-width) / 2) + v-bind(opponentX));
+  left: calc(50% - (var(--character-width)) + v-bind(opponentX));
 }
 </style>
