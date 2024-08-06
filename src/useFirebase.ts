@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, onValue } from "firebase/database";
+import { getDatabase, ref, set,push, onValue, remove } from "firebase/database";
 import type { Character } from "./views/Game.vue"
 
 const firebaseConfig = {
@@ -29,10 +29,35 @@ export default function useFirebase() {
     });
   }
 
+  function addFruit(x: number, y: number) {
+    const fruitRef = ref(db, "fruit");
+    const newFruitRef = push(fruitRef);
+    set(newFruitRef, {
+      name: "apple",
+      x,
+      y,
+      width: 56,
+      height: 56,
+    });
+  }
+
+  async function initFruit() {
+    const fruitRef = ref(db, "fruit");
+    await remove(fruitRef);
+    const screenBoundsX = (window.innerWidth / 2) - 56;
+    const screenBoundsY = window.innerHeight - 56;
+    //
+    for(let i = 0; i < 5; i++) {
+      addFruit(Math.random() * screenBoundsX, Math.random() * screenBoundsY);
+    }
+  }
+
   return {    
     db,
     ref,
     onValue,
     setCharacter,
+    addFruit,
+    initFruit
   };
 }

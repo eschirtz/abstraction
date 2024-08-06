@@ -17,7 +17,7 @@ import { javascript } from "@codemirror/lang-javascript"
 import useFirebase from "./useFirebase";
 import GameSplash from "./views/GameSplash.vue";
 import Game from "./views/Game.vue";
-import type { Character } from "./views/Game.vue"
+import type { Character, Fruit } from "./views/Game.vue"
 
 const fb = useFirebase();
 
@@ -40,9 +40,20 @@ const opponent = ref<Character>({
   score: 0
 });
 
-const fruit = ref([{ x: 200, y: 400, width: 56, height: 56 }]);
+const fruit = ref<Fruit[]>([]);
 
 const currentCollisions = ref<('fruit' | 'opponent')[]>([]);
+
+function subscribeToFruit() {
+  const fruitRef = fb.ref(fb.db, 'fruit');
+  fb.onValue(fruitRef, (snapshot) => {
+    const data = snapshot.val();
+    console.log(data);
+    if (data) {
+      fruit.value = Object.values(data);
+    }
+  });
+}
 
 function subscribeToOpponent(name: string) {
   const opponentRef = fb.ref(fb.db, 'users/' + name);
@@ -149,9 +160,12 @@ function animationFrameHandlerWrapper() {
 function eatFruit() {
   const collisions = checkForCollisions();
   if (collisions.includes('fruit')) {
+
+    const screenBoundsX = (window.innerWidth / 2) - 56;
+    const screenBoundsY = window.innerHeight - 56;
     //
     fruit.value = [];
-    fruit.value = [{ x: Math.random() * 800, y: Math.random() * 600, width: 56, height: 56 }];
+    fb.addFruit(Math.random() * screenBoundsX, Math.random() * screenBoundsY);
     character.value.score += 1;
   } else {
     character.value.score -= 1;
@@ -194,6 +208,8 @@ function runCode() {
       eatFruit
     );
     loading.value = false;
+    subscribeToFruit();
+    fb.initFruit();
     localStorage.setItem(STORAGE_KEY, userCode);
   } catch (e) {
     alert(e);
