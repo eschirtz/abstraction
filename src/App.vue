@@ -156,6 +156,7 @@ function eatFruit() {
   } else {
     character.value.score -= 1;
   }
+  fb.setCharacter(character.value);
 }
 
 let editorView: EditorView;
