@@ -27,16 +27,18 @@ const loading = ref(true);
 const character = ref<Character>({
   x: 0,
   y: 0,
+  width: 96,
   height: 256,
 });
 
 const opponent = ref<Character>({
   x: 0,
   y: 0,
+  width: 96,
   height: 256,
 });
 
-const fruit = ref([{ x: 0, y: 400 }]);
+const fruit = ref([{ x: 200, y: 400, width: 56, height: 56 }]);
 
 function subscribeToOpponent(name: string) {
   const opponentRef = fb.ref(fb.db, 'users/' + name);
@@ -74,19 +76,13 @@ function setPosition(x: number, y?: number) {
 function checkForCollisions(): ('fruit' | 'opponent')[] {
   const collisions: ('fruit' | 'opponent')[] = [];
 
-  const CharacterWidth = 128;
-  const CharacterHeight = 256;
-
-  const FruitWidth = 56;
-  const FruitHeight = FruitWidth;
-
   // Check for collisions with fruit
   fruit.value.forEach((f) => {
     if (
-      character.value.x < f.x + FruitWidth &&
-      character.value.x + CharacterWidth > f.x &&
-      character.value.y < f.y + FruitHeight &&
-      character.value.y + CharacterHeight > f.y
+      character.value.x < f.x + f.width &&
+      character.value.x + character.value.width > f.x &&
+      character.value.y < f.y + f.height &&
+      character.value.y + character.value.height > f.y
     ) {
       collisions.push('fruit');
       character.value.score = (character.value.score ?? 0) + 1;
