@@ -176,6 +176,11 @@ function eatFruit() {
   fb.setCharacter(character.value);
 }
 
+function setScore(score: number) {
+  character.value.score = score;
+  fb.setCharacter({ ...character.value, score });
+}
+
 let editorView: EditorView;
 
 function runCode() {
@@ -194,6 +199,7 @@ function runCode() {
       'onAnimationFrame',
       'checkForCollisions',
       'eatFruit',
+      'setScore',
       userCode
     );    
     runUserCode(
@@ -208,7 +214,8 @@ function runCode() {
       onSpacebarPressed,
       onAnimationFrame,
       checkForCollisions,
-      eatFruit
+      eatFruit,
+      setScore
     );
     loading.value = false;
     subscribeToFruit();
