@@ -1,6 +1,7 @@
 <template>
   <div class="bg">
     <img class="fire" src="/img/fire.gif" alt="animated fire GIF">
+    <div class="platform">width: 300. x: 300 y: 600</div>
     <div v-if="me.name" class="flex">
       <div v-for="c of [me, opponent]" :key="c.name" class="flex grow">
         <h1 class="text-center text-lg font-sans font-bold text-white tracking-wider">{{ c.name }}: {{  c.score ?? 0 }}</h1>
@@ -8,7 +9,7 @@
       <!-- <h1 class="text-center text-lg font-sans font-bold text-white tracking-wider">{{collisions}}</h1> -->
     </div>
     <Character :segments="me.bodyParts ?? []" class="character" :style="position.getStyle(me.x, me.y, me.height, me.rotation)" />
-    <Character :segments="opponent.bodyParts ?? []" class="opponent character" :style="position.getStyle(opponent.x, opponent.y, opponent.height, opponent.rotation)" />
+    <Character :segments="opponent.bodyParts ?? []" class="opponent character" :style="position.getStyle(opponent.x, opponent.y, opponent.height, opponent.rotation)" />    
     <Fruit v-for="f of fruit" :style="position.getStyle(f.x, f.y, 56)" />
   </div>
 </template>
@@ -105,5 +106,15 @@ const opponentX = computed(() => {
   position: absolute;
   width: 100%;
   bottom: 0;
+}
+
+.platform {
+  position: absolute;
+  width: 300px;
+  height: 20px;
+  background-color: brown;
+  color: white;
+  left: 300px;
+  top: calc(100vh - 600px);
 }
 </style>
