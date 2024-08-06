@@ -160,12 +160,19 @@ function animationFrameHandlerWrapper() {
  */
 function eatFruit() {
   const collisions = checkForCollisions();
+  let hasFruit = false;
   collisions.forEach((collision) => {
+    if (collision.type === 'fruit') {
+      hasFruit = true;
+    }
     const screenBoundsX = (window.innerWidth / 2) - 56;
     const screenBoundsY = window.innerHeight - 56;
     fb.addFruit(Math.random() * screenBoundsX, Math.random() * screenBoundsY, collision.id ?? '');
     character.value.score += 1;
   });
+  if (!hasFruit) {
+    character.value.score = 0;
+  }
   fb.setCharacter(character.value);
 }
 
