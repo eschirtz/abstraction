@@ -29,7 +29,10 @@ export default function useFirebase() {
     });
   }
 
-  function addFruit(x: number, y: number) {
+  function addFruit(x: number, y: number, id?: string) {
+    if(id) {
+      remove(ref(db, "fruit/" + id));
+    }
     const fruitRef = ref(db, "fruit");
     const newFruitRef = push(fruitRef);
     set(newFruitRef, {

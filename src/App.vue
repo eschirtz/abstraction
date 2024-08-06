@@ -42,7 +42,7 @@ const opponent = ref<Character>({
 
 const fruit = ref<Fruit[]>([]);
 
-const currentCollisions = ref<('fruit' | 'opponent')[]>([]);
+const currentCollisions = ref<{ type: 'fruit' | 'opponent', id?: string }[]>([]);
 
 function subscribeToFruit() {
   const fruitRef = fb.ref(fb.db, 'fruit');
@@ -50,7 +50,8 @@ function subscribeToFruit() {
     const data = snapshot.val();
     console.log(data);
     if (data) {
-      fruit.value = Object.values(data);
+      const ids = Object.keys(data);
+      fruit.value = ids.map((id) => ({ id, ...data[id] }));
     }
   });
 }
@@ -88,8 +89,8 @@ function setPosition(x: number, y?: number) {
   fb.setCharacter({ ...character.value, x, y: y ?? character.value.y });
 }
 
-function checkForCollisions(): ('fruit' | 'opponent')[] {
-  const collisions: ('fruit' | 'opponent')[] = [];
+function checkForCollisions(): { type: 'fruit' | 'opponent', id?: string }[] {
+  const collisions: { type: 'fruit' | 'opponent', id?: string }[] = [];
 
   // Check for collisions with fruit
   fruit.value.forEach((f) => {
@@ -99,7 +100,7 @@ function checkForCollisions(): ('fruit' | 'opponent')[] {
       character.value.y < f.y + f.height &&
       character.value.y + character.value.height > f.y
     ) {
-      collisions.push('fruit');      
+      collisions.push({type: 'fruit', id: f.id});      
     }
   });
 
@@ -110,7 +111,7 @@ function checkForCollisions(): ('fruit' | 'opponent')[] {
     character.value.y < opponent.value.y + opponent.value.height &&
     character.value.y + character.value.height > opponent.value.y
   ) {
-    collisions.push('opponent');
+    collisions.push({type: 'opponent'});
   }
 
   currentCollisions.value = collisions;
@@ -159,17 +160,12 @@ function animationFrameHandlerWrapper() {
  */
 function eatFruit() {
   const collisions = checkForCollisions();
-  if (collisions.includes('fruit')) {
-
+  collisions.forEach((collision) => {
     const screenBoundsX = (window.innerWidth / 2) - 56;
     const screenBoundsY = window.innerHeight - 56;
-    //
-    fruit.value = [];
-    fb.addFruit(Math.random() * screenBoundsX, Math.random() * screenBoundsY);
+    fb.addFruit(Math.random() * screenBoundsX, Math.random() * screenBoundsY, collision.id ?? '');
     character.value.score += 1;
-  } else {
-    character.value.score -= 1;
-  }
+  });
   fb.setCharacter(character.value);
 }
 
