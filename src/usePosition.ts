@@ -8,11 +8,12 @@ export default function usePosition() {
      * @param height 
      * @returns 
      */
-    function getStyle(x: number, y: number, height: number) {
+    function getStyle(x: number, y: number, height: number, rotation?: number) {
         return {
             position: 'absolute',
             left: `${x}px`,
             top: `calc(100vh - ${y}px - ${height}px)`,
+            transform: `rotate(${rotation ?? 0}deg)`,
         }
     }
     

@@ -7,8 +7,8 @@
       </div>
       <!-- <h1 class="text-center text-lg font-sans font-bold text-white tracking-wider">{{collisions}}</h1> -->
     </div>
-    <Character :segments="me.bodyParts ?? []" class="character" :style="position.getStyle(me.x, me.y, me.height)" />
-    <Character :segments="opponent.bodyParts ?? []" class="opponent character" :style="position.getStyle(opponent.x, opponent.y, opponent.height)" />
+    <Character :segments="me.bodyParts ?? []" class="character" :style="position.getStyle(me.x, me.y, me.height, me.rotation)" />
+    <Character :segments="opponent.bodyParts ?? []" class="opponent character" :style="position.getStyle(opponent.x, opponent.y, opponent.height, opponent.rotation)" />
     <Fruit v-for="f of fruit" :style="position.getStyle(f.x, f.y, 56)" />
   </div>
 </template>
@@ -28,6 +28,7 @@ export interface Character {
   bodyParts?: string[];
   x: number;
   y: number;
+  rotation: number;
   width: number;
   height: number;
   score: number;

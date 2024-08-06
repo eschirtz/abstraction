@@ -27,6 +27,7 @@ const loading = ref(true);
 const character = ref<Character>({
   x: 0,
   y: 0,
+  rotation: 0,
   width: 96,
   height: 256,
   score: 0
@@ -35,6 +36,7 @@ const character = ref<Character>({
 const opponent = ref<Character>({
   x: 0,
   y: 0,
+  rotation: 0,
   width: 96,
   height: 256,
   score: 0
@@ -87,6 +89,11 @@ function setPosition(x: number, y?: number) {
   character.value.x = x;
   character.value.y = y ?? character.value.y;
   fb.setCharacter({ ...character.value, x, y: y ?? character.value.y });
+}
+
+function setRotation(degrees: number) {
+  character.value.rotation = degrees;
+  fb.setCharacter({ ...character.value, rotation: degrees });
 }
 
 function checkForCollisions(): { type: 'fruit' | 'opponent', id?: string }[] {
@@ -200,6 +207,7 @@ function runCode() {
       'checkForCollisions',
       'eatFruit',
       'setScore',
+      'setRotation',
       userCode
     );    
     runUserCode(
@@ -215,7 +223,8 @@ function runCode() {
       onAnimationFrame,
       checkForCollisions,
       eatFruit,
-      setScore
+      setScore,
+      setRotation
     );
     loading.value = false;
     subscribeToFruit();
