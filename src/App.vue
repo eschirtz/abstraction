@@ -2,7 +2,7 @@
   <div class="flex h-screen max-h-screen grid grid-cols-2">
     <div class="flex flex-col code-window">
       <div id="editor" class="grow shrink min-h-0 overflow-auto"></div>
-      <button @click="runCode">Run code</button>
+      <button @click="runCode" class="shrink-0">Run code</button>
     </div>
     <GameSplash v-if="loading" />
     <Game v-else :me="character" :opponent="opponent" :fruit="fruit" :collisions="currentCollisions" />
@@ -317,5 +317,6 @@ button:hover {
 
 .code-window {
   background-color: #282c34;
+  max-height: 100vh;
 }
 </style>
