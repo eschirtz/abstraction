@@ -5,7 +5,7 @@
       <button @click="runCode">Run code</button>
     </div>
     <GameSplash v-if="loading" />
-    <Game v-else :me="character" :opponent="opponent" :fruit="fruit" />
+    <Game v-else :me="character" :opponent="opponent" :fruit="fruit" :collisions="currentCollisions" />
   </div>
 </template>
 
@@ -39,6 +39,8 @@ const opponent = ref<Character>({
 });
 
 const fruit = ref([{ x: 200, y: 400, width: 56, height: 56 }]);
+
+const currentCollisions = ref<('fruit' | 'opponent')[]>([]);
 
 function subscribeToOpponent(name: string) {
   const opponentRef = fb.ref(fb.db, 'users/' + name);
@@ -89,11 +91,18 @@ function checkForCollisions(): ('fruit' | 'opponent')[] {
     }
   });
 
-  collisions.forEach((collision) => {
-    // alert(`You collided with ${collision}`);
-  });
+  // Check for collisions with opponent
+  if (
+    character.value.x < opponent.value.x + opponent.value.width &&
+    character.value.x + character.value.width > opponent.value.x &&
+    character.value.y < opponent.value.y + opponent.value.height &&
+    character.value.y + character.value.height > opponent.value.y
+  ) {
+    collisions.push('opponent');
+  }
 
-  return [];
+  currentCollisions.value = collisions;
+  return collisions;
 }
 
 let leftKeyHandler: (character: Character) => void;
