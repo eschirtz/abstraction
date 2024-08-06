@@ -29,7 +29,7 @@ export interface Character {
   y: number;
   width: number;
   height: number;
-  score?: number;
+  score: number;
 }
 
 export interface Fruit {

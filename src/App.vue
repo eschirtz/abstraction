@@ -29,6 +29,7 @@ const character = ref<Character>({
   y: 0,
   width: 96,
   height: 256,
+  score: 0
 });
 
 const opponent = ref<Character>({
@@ -36,6 +37,7 @@ const opponent = ref<Character>({
   y: 0,
   width: 96,
   height: 256,
+  score: 0
 });
 
 const fruit = ref([{ x: 200, y: 400, width: 56, height: 56 }]);
@@ -86,8 +88,7 @@ function checkForCollisions(): ('fruit' | 'opponent')[] {
       character.value.y < f.y + f.height &&
       character.value.y + character.value.height > f.y
     ) {
-      collisions.push('fruit');
-      character.value.score = (character.value.score ?? 0) + 1;
+      collisions.push('fruit');      
     }
   });
 
@@ -141,6 +142,22 @@ function animationFrameHandlerWrapper() {
   window.requestAnimationFrame(animationFrameHandlerWrapper);
 }
 
+/**
+ * Kids will call this function when they think they are colliding with a fruit
+ * If they are wrong, punish them!
+ */
+function eatFruit() {
+  const collisions = checkForCollisions();
+  if (collisions.includes('fruit')) {
+    //
+    fruit.value = [];
+    fruit.value = [{ x: Math.random() * 800, y: Math.random() * 600, width: 56, height: 56 }];
+    character.value.score += 1;
+  } else {
+    character.value.score -= 1;
+  }
+}
+
 let editorView: EditorView;
 
 function runCode() {
@@ -158,6 +175,7 @@ function runCode() {
       'onSpacebarPressed', 
       'onAnimationFrame',
       'checkForCollisions',
+      'eatFruit',
       userCode
     );    
     runUserCode(
@@ -171,7 +189,8 @@ function runCode() {
       onDownKeyPressed,
       onSpacebarPressed,
       onAnimationFrame,
-      checkForCollisions
+      checkForCollisions,
+      eatFruit
     );
     loading.value = false;
     localStorage.setItem(STORAGE_KEY, userCode);
