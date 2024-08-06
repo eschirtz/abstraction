@@ -1,5 +1,6 @@
 <template>
   <div class="bg">
+    <img class="fire" src="/img/fire.gif" alt="animated fire GIF">
     <div v-if="me.name" class="flex">
       <div v-for="c of [me, opponent]" :key="c.name" class="flex grow">
         <h1 class="text-center text-lg font-sans font-bold text-white tracking-wider">{{ c.name }}: {{  c.score ?? 0 }}</h1>
@@ -97,5 +98,11 @@ const opponentX = computed(() => {
 .opponent {
   top: calc(100vh - var(--character-height) - v-bind(opponentY));
   left: calc(50% - (var(--character-width)) + v-bind(opponentX));
+}
+
+.fire {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
 }
 </style>
