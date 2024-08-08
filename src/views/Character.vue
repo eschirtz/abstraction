@@ -33,4 +33,8 @@ img {
   object-fit: cover;
   min-height: 0;
 }
+
+img:first-child {
+  border-radius: 45% 45% 0 0;
+}
 </style>

@@ -14,6 +14,5 @@ img {
   width: 56px;
   height: 56px;
   position: absolute;
-  border: red solid 1px;
 }
 </style>

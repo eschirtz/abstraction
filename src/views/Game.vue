@@ -6,7 +6,6 @@
       <div v-for="c of [me, opponent]" :key="c.name" class="flex grow">
         <h1 class="text-center text-lg font-sans font-bold text-white tracking-wider">{{ c.name }}: {{  c.score ?? 0 }}</h1>
       </div>
-      <!-- <h1 class="text-center text-lg font-sans font-bold text-white tracking-wider">{{collisions}}</h1> -->
     </div>
     <Character :segments="me.bodyParts ?? []" class="character" :style="position.getStyle(me.x, me.y, me.height, me.rotation)" />
     <Character :segments="opponent.bodyParts ?? []" class="opponent character" :style="position.getStyle(opponent.x, opponent.y, opponent.height, opponent.rotation)" />    
@@ -89,7 +88,7 @@ const opponentX = computed(() => {
   --character-height: 256px;
   width: var(--character-width);
   height: var(--character-height);
-  border: red solid 1px;
+  /* border: red solid 1px; */
 }
 
 .me {  
