@@ -1,15 +1,13 @@
 <template>
-  <div class="bg">
-    <img class="fire" src="/img/fire.gif" alt="animated fire GIF">
-    <div class="platform">width: 300. x: 300 y: 600</div>
-    <div v-if="me.name" class="flex">
-      <div v-for="c of [me, opponent]" :key="c.name" class="flex grow">
-        <h1 class="text-center text-lg font-sans font-bold text-white tracking-wider">{{ c.name }}: {{  c.score ?? 0 }}</h1>
-      </div>
+  <div class="bg">    
+    <!-- <div class="platform">width: 300. x: 300 y: 600</div> -->
+    <div v-if="me.name" class="flex gui w-full justify-center p-6">
+      <h1 class="text-center text-2xl font-sans font-bold text-white tracking-wider">{{ me.name }}</h1>
     </div>
     <Character :segments="me.bodyParts ?? []" class="character" :style="position.getStyle(me.x, me.y, me.height, me.rotation)" />
     <Character :segments="opponent.bodyParts ?? []" class="opponent character" :style="position.getStyle(opponent.x, opponent.y, opponent.height, opponent.rotation)" />    
-    <Fruit v-for="f of fruit" :style="position.getStyle(f.x, f.y, 56)" />
+    <img class="fire" src="/img/fire.gif" alt="animated fire GIF">
+    <!-- <Fruit v-for="f of fruit" :style="position.getStyle(f.x, f.y, 56)" /> -->
   </div>
 </template>
 
@@ -88,7 +86,7 @@ const opponentX = computed(() => {
   --character-height: 256px;
   width: var(--character-width);
   height: var(--character-height);
-  /* border: red solid 1px; */
+  z-index: 1;
 }
 
 .me {  
@@ -105,6 +103,7 @@ const opponentX = computed(() => {
   position: absolute;
   width: 100%;
   bottom: 0;
+  z-index: 0;
 }
 
 .platform {
@@ -115,5 +114,10 @@ const opponentX = computed(() => {
   color: white;
   left: 300px;
   top: calc(100vh - 600px);
+}
+
+.gui {
+  position: absolute;
+  z-index: 4;
 }
 </style>

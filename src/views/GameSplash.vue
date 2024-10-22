@@ -1,6 +1,6 @@
 <template>
   <div class="bg">
-    <h1 class="title">FRUITAL SURVIVAL</h1>
+    <h1 class="title">YOUR FIRST GAME</h1>
     <img class="watermelon" :src="watermelonGIF" alt="watermelon GIF">
     <img class="banana" :src="bananaGIF" alt="banana GIF">
     <img class="fire" :src="fireGIF" alt="animated fire GIF">
