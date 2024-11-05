@@ -246,10 +246,12 @@ onMounted(() => {
  * Functions:
  * - setName(name: string)
  * - setAppearance(appearence: string[])
- * 
- * Bonus:
- * - setPosition(x: number, y: number)
- * - onAnimationFrame(cb: (character) => {}))
+ * - onLeftKeyPressed(cb: (character) => {})
+ * - onRightKeyPressed(cb: (character) => {})
+ * - onUpKeyPressed(cb: (character) => {})
+ * - onDownKeyPressed(cb: (character) => {})
+ * - onSpacebarPressed(cb: (character) => {})
+ * - onAnimationFrame(cb: (character) => {})
  */
 `
   const storedCode = localStorage.getItem(STORAGE_KEY) ?? placeholder;
